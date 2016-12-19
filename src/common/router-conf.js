@@ -1,30 +1,49 @@
 define(function(){
 
-    var routerConf = {
-
-        'home': {
-            page : 'home',
-            templateId: 'home/home',
-            controller: 'home/home'
+    var routeMap={},
+        defaultPage = 'home',
+        configMap = {
+            tpl_suffix: '-tpl.html',
+            ctrl_suffix : '-ctrl'
         },
-        'admin': {
-            page: 'admin',
-            templateId: 'admin/admin',
-            controller: 'admin/admin'
-        }
+        routes = [
+            {
+                page : 'home',
+                templateId: 'home',
+                controller: 'home/home',
+            },
+            {
+                page: 'admin',
+                templateId: 'admin',
+                controller: 'admin/admin',
+            }
+
+        ];
+
+    (function(){
+
+        routes.forEach(function(route){
+            routeMap[route.page] = route;
+        });
+
+    }());
 
 
 
-    };
 
     return {
-        getConf : function(path){
-            var route = routerConf[path];
+        getRoute : function(page){
+            var route = routeMap[page];
             if(!route){
-                return routerConf['home'];
+                return routeMap[defaultPage];
             }
             return route;
-
+        },
+        getTemplateId: function(page){
+            return '../tpl/' + this.getRoute(page).templateId + configMap.tpl_suffix;
+        },
+        getController: function(page){
+            return this.getRoute(page).controller + configMap.ctrl_suffix;
         }
     }
 

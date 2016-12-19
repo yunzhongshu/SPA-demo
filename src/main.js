@@ -1,13 +1,14 @@
 
 requirejs.config({
-    baseUrl: 'dep',
+    baseUrl: 'asset/js',
     paths: {
-        'src': '../src',     // ../js目录
-        'jquery': 'jquery/jquery.min',
-        'text': 'requirejs/text',
-        'bootstrap': 'bootstrap/js/bootstrap.min',
-        'jsrender': 'jsrender/jsrender.min',
-        'urianchor': 'urianchor/jquery.uriAnchor',
+        'jquery': 'vendors/jquery',
+        'text': 'vendors/util',
+        'bootstrap': 'vendors/jquery',
+        'jsrender': 'vendors/jquery',
+        'urianchor': 'vendors/jquery',
+        'common/router': 'commons',
+        'common/anchor-state': 'commons',
     },
     shim: {
         'jquery': {
@@ -28,5 +29,4 @@ requirejs.config({
 
 
 
-
-require(['src/common/router']);
+require(['common/router']);

@@ -1,7 +1,7 @@
-require([
+define([
     'jquery',
-    'src/common/router-conf',
-    'src/common/anchor-state',
+    'common/router-conf',
+    'common/anchor-state',
     'text',
     'jsrender',
 
@@ -13,27 +13,13 @@ require([
     var jqueryMap = {
             $container : $('#page')
         },
-        route, router, changePage, changeHash;
+        runRouter, changePage, changeHash, startRouter;
 
-    /**
-     * 注册路由
-     * @param path　路径
-     * @param templateId　模板id
-     * @param controller 页面js名称
-     */
-    route = function(path, templateId, controller){
-
-        routes[path] = {
-            templateId : templateId,
-            controller : controller
-        }
-
-    };
 
     /**
      * 路由处理
      */
-    router = function(){
+    runRouter = function(){
 
         if(anchorState.pageChange()){
 
@@ -46,16 +32,15 @@ require([
 
         }
 
-
     };
 
     changePage = function(){
 
-        var route = routerConf.getConf( anchorState.getCurrentPage());
+        var page = anchorState.getCurrentPage();
 
-        if(route.controller && route.templateId && jqueryMap.$container){
+        if(jqueryMap.$container){
 
-            require(['text!src/'+route.templateId+'-tpl.html', 'src/' +route.controller], function(pageTpl, controller){
+            require(['text!'+routerConf.getTemplateId(page), '' +routerConf.getController(page)], function(pageTpl, controller){
 
                 var template = $.templates(pageTpl);
 
@@ -73,35 +58,31 @@ require([
 
     changeHash = function(){
 
-        var route = routerConf.getConf( anchorState.getCurrentPage());
+        var page = anchorState.getCurrentPage();
 
-        if(route.controller){
+        require([routerConf.getController(page)], function(controller){
 
-            require(['src/' +route.controller], function(controller){
-
-                if(controller.changeHash && typeof controller.changeHash === 'function'){
-                    controller.changeHash();
-                }
-            });
-
-        }
+            if(controller.changeHash && typeof controller.changeHash === 'function'){
+                controller.changeHash();
+            }
+        });
 
     };
+
 
 
     $(function(){
 
         window.addEventListener('hashchange', function(){
-            router();
+            runRouter();
         });
 
-        router();
+        runRouter();
     });
 
 
     return {
-        route : route,
-        router: router
+        runRouter: runRouter
     }
 
 
